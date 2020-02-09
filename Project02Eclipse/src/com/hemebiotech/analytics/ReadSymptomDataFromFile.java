@@ -1,6 +1,7 @@
 package com.hemebiotech.analytics;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,42 +13,51 @@ import java.util.List;
  */
 public class ReadSymptomDataFromFile implements ISymptomReader {
 
-	private String filePath; //Supprimer et utiliser directement Config.filePath ?
 	/**
 	 * 
 	 * @param filepath a full or partial path to file with symptom strings in it, one per line
 	 */
-	
-	public ReadSymptomDataFromFile () {
-		this.filePath = Config.sourceFilePath;
-	}
-	
+
 	@Override
-	public List<String> getSymptoms() {
+	public List<String> getSymptoms() throws NoFilePathException {
 		List<String> result = new ArrayList<>();
 		
-		if (this.filePath != null) {
+		BufferedReader reader = null;
+		
+		if (Config.SOURCEFILEPATH != "") {
+
 			try {
-				BufferedReader reader = new BufferedReader (new FileReader(this.filePath));
+				reader = new BufferedReader (new FileReader(Config.SOURCEFILEPATH));
 				
-				String line = reader.readLine();
-				
-				//Loop on all file
-				while (line != null) {
+				try {
+					String line = reader.readLine();
 					
-					//Add line to the list
-					result.add(line);
+					//Loop on all file
+					while (line != null) {
+						
+						//Add line to the list
+						result.add(line);
+						
+						line = reader.readLine();	// get another symptom
+					}
 					
-					line = reader.readLine();	// get another symptom
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-				reader.close();
-			} catch (IOException e) {
+				
+			
+			} catch(FileNotFoundException e) {
 				e.printStackTrace();
-			}
+			} 
+			
+	
+		} else {
+			throw new NoFilePathException();
 		}
 		
 		return result;
+		
 	}
 	
-
 }

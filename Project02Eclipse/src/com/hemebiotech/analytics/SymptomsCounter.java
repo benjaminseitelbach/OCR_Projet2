@@ -23,10 +23,8 @@ public class SymptomsCounter implements ISymptomsCounter {
 		//Loop on all symptoms
 		for(String symptom:symptoms) {
 			
-			//If symptom doesn't exist
 			if(result.get(symptom) == null) {
 				
-				//Add symptom as key and 1 as value
 				result.put(symptom, 1);
 				
 			} else {
@@ -39,6 +37,7 @@ public class SymptomsCounter implements ISymptomsCounter {
 			}
 
 		}
+		
 		return result;
 	}
 }
